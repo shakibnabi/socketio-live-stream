@@ -7,7 +7,7 @@ var Log = require("log");
 var log = new Log("debug");
 
 
-var port = 3000;
+var port = 443;
 
 app.use(express.static(__dirname + "/statics"));
 
