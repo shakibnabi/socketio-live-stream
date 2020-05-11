@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Emitir</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<video src="" id="video" style="width: 680px;height: 320px;" autoplay="true"></video>
+	<canvas style="display: none;" id="preview"></canvas>
+	<div id="logger"></div>
+
+	<script type="text/javascript">
+		var canvas = document.getElementById('preview');
+		var context = canvas.getContext('2d');
+
+		canvas.width = 800;
+		canvas.height = 800;
+
+		context.width = canvas.width;
+		context.height = canvas.height;
+
+		var video = document.getElementById('video');
+
+		var socket = io();
+
+		function logger(msg){
+			$("#logger").text(msg);
+		}
+
+
+		function viewVideo(video,context) {
+			context.drawImage(video,0,0,context.width,context.height);
+			socket.emit('stream', canvas.toDataURL('image/webp'));
+		}
+
+
+		$(function() {
+			navigator.mediaDevices.getUserMedia({
+				audio: false,
+				video: true
+			}).then(stream => {
+				video.srcObject = stream;
+			}).catch(console.error)
+
+			setInterval(function(){
+				viewVideo(video,context)
+			},70);
+		});
+
+		// function videoplay(){
+		// 	navigator.mediaDevices.getUserMedia({
+		// 		audio: true,
+		// 		video: true
+		// 	}).then(stream => {
+		// 		video.srcObject = stream;
+		// 	}).catch(console.error)
+		// }
+		// videoplay();
+
+
+	</script>
+</body>
+</html>
